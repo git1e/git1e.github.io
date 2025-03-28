@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xxid.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default","show_result":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInDown"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="快照备份创建仓库PUT _snapshot&#x2F;my_backup  &amp;#123;     &quot;type&quot;: &quot;fs&quot;,      &quot;settings&quot;: &amp;#123;         &quot;location&quot;: &quot;&#x2F;mount&#x2F;backups&#x2F;my_backup&quot;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="es备份">
+<meta property="og:url" content="http://xxid.xyz/posts/3e39/index.html">
+<meta property="og:site_name" content="blog">
+<meta property="og:description" content="快照备份创建仓库PUT _snapshot&#x2F;my_backup  &amp;#123;     &quot;type&quot;: &quot;fs&quot;,      &quot;settings&quot;: &amp;#123;         &quot;location&quot;: &quot;&#x2F;mount&#x2F;backups&#x2F;my_backup&quot;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-06-24T10:32:40.000Z">
+<meta property="article:modified_time" content="2025-03-28T09:34:09.128Z">
+<meta property="article:author" content="grant lee">
+<meta property="article:tag" content="es">
+<meta property="article:tag" content="elk">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://xxid.xyz/posts/3e39/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://xxid.xyz/posts/3e39/","path":"posts/3e39/","title":"es备份"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>es备份 | blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">11</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">20</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BF%AB%E7%85%A7%E5%A4%87%E4%BB%BD"><span class="nav-number">1.</span> <span class="nav-text">快照备份</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%BB%93%E5%BA%93"><span class="nav-number">1.1.</span> <span class="nav-text">创建仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E7%85%A7%E6%89%80%E6%9C%89%E6%89%93%E5%BC%80%E7%9A%84%E7%B4%A2%E5%BC%95"><span class="nav-number">1.2.</span> <span class="nav-text">快照所有打开的索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E7%85%A7%E6%8C%87%E5%AE%9A%E7%B4%A2%E5%BC%95"><span class="nav-number">1.3.</span> <span class="nav-text">快照指定索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%97%E5%87%BA%E5%BF%AB%E7%85%A7%E7%9B%B8%E5%85%B3%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="nav-number">1.4.</span> <span class="nav-text">列出快照相关的信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E5%BF%AB%E7%85%A7"><span class="nav-number">1.5.</span> <span class="nav-text">删除快照</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%91%E6%8E%A7%E5%BF%AB%E7%85%A7%E8%BF%9B%E5%BA%A6"><span class="nav-number">1.6.</span> <span class="nav-text">监控快照进度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%96%E6%B6%88%E4%B8%80%E4%B8%AA%E5%BF%AB%E7%85%A7"><span class="nav-number">1.7.</span> <span class="nav-text">取消一个快照</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E5%BF%AB%E7%85%A7%E6%81%A2%E5%A4%8D"><span class="nav-number">2.</span> <span class="nav-text">从快照恢复</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%81%A2%E5%A4%8Dsnapshot-1%E5%BF%AB%E7%85%A7%E4%B8%AD%E7%9A%84index-1%E7%B4%A2%E5%BC%95%EF%BC%8C%E5%B9%B6%E9%87%8D%E5%91%BD%E5%90%8D%E4%B8%BArestored-index-1-%E5%8F%AA%E6%81%A2%E5%A4%8D-index-1-%E7%B4%A2%E5%BC%95%EF%BC%8C%E5%BF%BD%E7%95%A5%E5%BF%AB%E7%85%A7%E4%B8%AD%E5%AD%98%E5%9C%A8%E7%9A%84%E5%85%B6%E4%BD%99%E7%B4%A2%E5%BC%95%E3%80%82-%E6%9F%A5%E6%89%BE%E6%89%80%E6%8F%90%E4%BE%9B%E7%9A%84%E6%A8%A1%E5%BC%8F%E8%83%BD%E5%8C%B9%E9%85%8D%E4%B8%8A%E7%9A%84%E6%AD%A3%E5%9C%A8%E6%81%A2%E5%A4%8D%E7%9A%84%E7%B4%A2%E5%BC%95%E3%80%82-%E7%84%B6%E5%90%8E%E6%8A%8A%E5%AE%83%E4%BB%AC%E9%87%8D%E5%91%BD%E5%90%8D%E6%88%90%E6%9B%BF%E4%BB%A3%E7%9A%84%E6%A8%A1%E5%BC%8F%E3%80%82"><span class="nav-number">2.1.</span> <span class="nav-text">恢复snapshot_1快照中的index_1索引，并重命名为restored_index_1POST &#x2F;_snapshot&#x2F;my_backup&#x2F;snapshot_1&#x2F;_restore
+{
+    &quot;indices&quot;: &quot;index_1&quot;, 
+    &quot;rename_pattern&quot;: &quot;index_(.+)&quot;, 
+    &quot;rename_replacement&quot;: &quot;restored_index_$1&quot; 
+}- 只恢复 index_1 索引，忽略快照中存在的其余索引。- 查找所提供的模式能匹配上的正在恢复的索引。- 然后把它们重命名成替代的模式。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%91%E6%8E%A7%E6%81%A2%E5%A4%8D%E6%93%8D%E4%BD%9C"><span class="nav-number">2.2.</span> <span class="nav-text">监控恢复操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%96%E6%B6%88%E4%B8%80%E4%B8%AA%E6%81%A2%E5%A4%8D"><span class="nav-number">2.3.</span> <span class="nav-text">取消一个恢复</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">grant lee</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xxid.xyz/posts/3e39/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="grant lee">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="es备份 | blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          es备份
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-06-24 10:32:40" itemprop="dateCreated datePublished" datetime="2023-06-24T10:32:40+00:00">2023-06-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-03-28 09:34:09" itemprop="dateModified" datetime="2025-03-28T09:34:09+00:00">2025-03-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/elk/" itemprop="url" rel="index"><span itemprop="name">elk</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/elk/es/" itemprop="url" rel="index"><span itemprop="name">es</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="快照备份"><a href="#快照备份" class="headerlink" title="快照备份"></a>快照备份</h1><h2 id="创建仓库"><a href="#创建仓库" class="headerlink" title="创建仓库"></a>创建仓库</h2><pre class="line-numbers language-none"><code class="language-none">PUT _snapshot&#x2F;my_backup 
+&#123;
+    &quot;type&quot;: &quot;fs&quot;, 
+    &quot;settings&quot;: &#123;
+        &quot;location&quot;: &quot;&#x2F;mount&#x2F;backups&#x2F;my_backup&quot; 
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>1、给我们的仓库取一个名字my_backup。</li>
+<li>2、我们指定仓库的类型应该是一个共享文件系统。比如nfs共享，挂载在&#x2F;mount&#x2F;backups&#x2F;my_backup</li>
+<li>3、最后，我们提供一个已挂载的设备作为目的地址。</li>
+<li>4、其他的配置<pre class="line-numbers language-none"><code class="language-none">max_snapshot_bytes_per_sec<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+当快照数据进入仓库时，这个参数控制这个过程的限流情况。默认是每秒 20mb 。<pre class="line-numbers language-none"><code class="language-none">max_restore_bytes_per_sec<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+当从仓库恢复数据时，这个参数控制什么时候恢复过程会被限流以保障你的网络不会被占满。默认是每秒 20mb。<pre class="line-numbers language-none"><code class="language-none">POST _snapshot&#x2F;my_backup&#x2F; 
+&#123;
+    &quot;type&quot;: &quot;fs&quot;,
+    &quot;settings&quot;: &#123;
+        &quot;location&quot;: &quot;&#x2F;mount&#x2F;backups&#x2F;my_backup&quot;,
+        &quot;max_snapshot_bytes_per_sec&quot; : &quot;50mb&quot;, 
+        &quot;max_restore_bytes_per_sec&quot; : &quot;50mb&quot;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+注意我们用的是 POST 而不是 PUT 。这会更新已有仓库的设置。<br>然后添加我们的新设置。</li>
+</ul>
+<h2 id="快照所有打开的索引"><a href="#快照所有打开的索引" class="headerlink" title="快照所有打开的索引"></a>快照所有打开的索引</h2><pre class="line-numbers language-none"><code class="language-none">PUT _snapshot&#x2F;my_backup&#x2F;snapshot_1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>份所有打开的索引到 my_backup 仓库下 snapshot_1 的快照里</p>
+<h2 id="快照指定索引"><a href="#快照指定索引" class="headerlink" title="快照指定索引"></a>快照指定索引</h2><p>这个快照命令现在只会备份 index1 和 index2 了。</p>
+<pre class="line-numbers language-none"><code class="language-none">PUT _snapshot&#x2F;my_backup&#x2F;snapshot_2
+&#123;
+    &quot;indices&quot;: &quot;index_1,index_2&quot;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="列出快照相关的信息"><a href="#列出快照相关的信息" class="headerlink" title="列出快照相关的信息"></a>列出快照相关的信息</h2><p>列出快照snapshot_2的信息</p>
+<pre class="line-numbers language-none"><code class="language-none">GET _snapshot&#x2F;my_backup&#x2F;snapshot_2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>获取my_backup仓库下所有的快照信息</p>
+<pre class="line-numbers language-none"><code class="language-none">GET _snapshot&#x2F;my_backup&#x2F;_all<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="删除快照"><a href="#删除快照" class="headerlink" title="删除快照"></a>删除快照</h2><p>删除snapshot_2快照</p>
+<pre class="line-numbers language-none"><code class="language-none">DELETE _snapshot&#x2F;my_backup&#x2F;snapshot_2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="监控快照进度"><a href="#监控快照进度" class="headerlink" title="监控快照进度"></a>监控快照进度</h2><pre class="line-numbers language-none"><code class="language-none">GET _snapshot&#x2F;my_backup&#x2F;snapshot_2&#x2F;_status<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="取消一个快照"><a href="#取消一个快照" class="headerlink" title="取消一个快照"></a>取消一个快照</h2><pre class="line-numbers language-none"><code class="language-none">DELETE _snapshot&#x2F;my_backup&#x2F;snapshot_2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h1 id="从快照恢复"><a href="#从快照恢复" class="headerlink" title="从快照恢复"></a>从快照恢复</h1><p>将snapshot_1恢复。</p>
+<pre class="line-numbers language-none"><code class="language-none">POST _snapshot&#x2F;my_backup&#x2F;snapshot_1&#x2F;_restore<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>默认行为是把这个快照里存有的所有索引都恢复，也可以指定这个快照中的具体索引进行恢复。</p>
+<h2 id="恢复snapshot-1快照中的index-1索引，并重命名为restored-index-1-只恢复-index-1-索引，忽略快照中存在的其余索引。-查找所提供的模式能匹配上的正在恢复的索引。-然后把它们重命名成替代的模式。"><a href="#恢复snapshot-1快照中的index-1索引，并重命名为restored-index-1-只恢复-index-1-索引，忽略快照中存在的其余索引。-查找所提供的模式能匹配上的正在恢复的索引。-然后把它们重命名成替代的模式。" class="headerlink" title="恢复snapshot_1快照中的index_1索引，并重命名为restored_index_1- 只恢复 index_1 索引，忽略快照中存在的其余索引。- 查找所提供的模式能匹配上的正在恢复的索引。- 然后把它们重命名成替代的模式。"></a>恢复snapshot_1快照中的index_1索引，并重命名为restored_index_1<br><pre class="line-numbers language-none"><code class="language-none">POST &#x2F;_snapshot&#x2F;my_backup&#x2F;snapshot_1&#x2F;_restore
+&#123;
+    &quot;indices&quot;: &quot;index_1&quot;, 
+    &quot;rename_pattern&quot;: &quot;index_(.+)&quot;, 
+    &quot;rename_replacement&quot;: &quot;restored_index_$1&quot; 
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><br>- 只恢复 index_1 索引，忽略快照中存在的其余索引。<br>- 查找所提供的模式能匹配上的正在恢复的索引。<br>- 然后把它们重命名成替代的模式。</h2><h2 id="监控恢复操作"><a href="#监控恢复操作" class="headerlink" title="监控恢复操作"></a>监控恢复操作</h2><pre class="line-numbers language-none"><code class="language-none">GET restored_index_3&#x2F;_recovery<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>或者查看你集群里所有索引，可能包括跟你的恢复进程无关的其他分片移动：</p>
+<pre class="line-numbers language-none"><code class="language-none">GET &#x2F;_recovery&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="取消一个恢复"><a href="#取消一个恢复" class="headerlink" title="取消一个恢复"></a>取消一个恢复</h2><p>要取消一个恢复，你需要删除正在恢复的索引。因为恢复进程其实就是分片恢复，发送一个 删除索引 API 修改集群状态，就可以停止恢复进程。比如：</p>
+<pre class="line-numbers language-none"><code class="language-none">DELETE &#x2F;restored_index_3<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>如果 restored_index_3 正在恢复中，这个删除命令会停止恢复，同时删除所有已经恢复到集群里的数据。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>grant lee
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://xxid.xyz/posts/3e39/" title="es备份">http://xxid.xyz/posts/3e39/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/es/" rel="tag"># es</a>
+              <a href="/tags/elk/" rel="tag"># elk</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/9317/" rel="prev" title="es常用插件和工具">
+                  <i class="fa fa-chevron-left"></i> es常用插件和工具
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/84e2/" rel="next" title="es常见问题汇总">
+                  es常见问题汇总 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">grant lee</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">47k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">43 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.2.3/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

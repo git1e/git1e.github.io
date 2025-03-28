@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xxid.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default","show_result":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInDown"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="qexo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="链路监控-skywalking">
+<meta property="og:url" content="http://xxid.xyz/posts/skf69/index.html">
+<meta property="og:site_name" content="blog">
+<meta property="og:description" content="qexo">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-12-19T07:27:00.001Z">
+<meta property="article:modified_time" content="2023-12-19T07:27:00.001Z">
+<meta property="article:author" content="grant lee">
+<meta property="article:tag" content="qexo">
+<meta property="article:tag" content="hexo">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://xxid.xyz/posts/skf69/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://xxid.xyz/posts/skf69/","path":"posts/skf69/","title":"链路监控-skywalking"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>链路监控-skywalking | blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">11</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">20</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2"><span class="nav-number">2.</span> <span class="nav-text">部署</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java-agent-%E6%8E%A2%E9%92%88"><span class="nav-number">3.</span> <span class="nav-text">Java agent 探针</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Agent%E7%9A%84%E5%8F%AF%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8"><span class="nav-number">3.1.</span> <span class="nav-text">Agent的可配置属性列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">3.2.</span> <span class="nav-text"></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%80%89%E7%9A%84%E6%8F%92%E4%BB%B6"><span class="nav-number">3.3.</span> <span class="nav-text">可选的插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bootstrap-%E7%B1%BB%E6%8F%92%E4%BB%B6"><span class="nav-number">3.4.</span> <span class="nav-text">Bootstrap 类插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#-1"><span class="nav-number">3.5.</span> <span class="nav-text"></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E8%A6%86%E7%9B%96"><span class="nav-number">3.6.</span> <span class="nav-text">设置覆盖</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E5%B1%9E%E6%80%A7"><span class="nav-number">3.6.1.</span> <span class="nav-text">系统属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%90%86%E9%80%89%E9%A1%B9"><span class="nav-number">3.6.2.</span> <span class="nav-text">代理选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-number">3.6.3.</span> <span class="nav-text">系统环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A6%86%E7%9B%96%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">3.6.4.</span> <span class="nav-text">覆盖优先级</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">3.7.</span> <span class="nav-text">常用配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%87%E6%A0%B7%E7%8E%87%E9%85%8D%E7%BD%AE"><span class="nav-number">3.7.1.</span> <span class="nav-text">采样率配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Agent%E6%97%A5%E5%BF%97%E9%85%8D%E7%BD%AE"><span class="nav-number">3.7.2.</span> <span class="nav-text">Agent日志配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%BD%E7%95%A5%E6%8C%87%E5%AE%9A%E7%AB%AF%E7%82%B9"><span class="nav-number">3.7.3.</span> <span class="nav-text">忽略指定端点</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">grant lee</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xxid.xyz/posts/skf69/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="grant lee">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="链路监控-skywalking | blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          链路监控-skywalking
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-12-19 07:27:00" itemprop="dateCreated datePublished" datetime="2023-12-19T07:27:00+00:00">2023-12-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%9B%91%E6%8E%A7/" itemprop="url" rel="index"><span itemprop="name">监控</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/apm/" itemprop="url" rel="index"><span itemprop="name">apm</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7.1k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><h1 id="Java-agent-探针"><a href="#Java-agent-探针" class="headerlink" title="Java agent 探针"></a>Java agent 探针</h1><h2 id="Agent的可配置属性列表"><a href="#Agent的可配置属性列表" class="headerlink" title="Agent的可配置属性列表"></a>Agent的可配置属性列表</h2><p>这里是<code>agent/config/agent.config</code>中支持的属性列表。</p>
+<table>
+<thead>
+<tr>
+<th>属性名</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>agent.namespace</code></td>
+<td>命名空间，用于隔离跨进程传播的header。如果进行了配置，header将为<code>HeaderName:Namespace</code>.</td>
+<td>未设置</td>
+</tr>
+<tr>
+<td><code>agent.service_name</code></td>
+<td>在SkyWalking UI中展示的服务名。5.x版本对应Application，6.x版本对应Service。 建议：为每个服务设置个唯一的名字，服务的多个服务实例为同样的服务名</td>
+<td><code>Your_ApplicationName</code></td>
+</tr>
+<tr>
+<td><code>agent.sample_n_per_3_secs</code></td>
+<td>负数或0表示不采样，默认不采样。SAMPLE_N_PER_3_SECS表示每3秒采样N条。</td>
+<td>未设置</td>
+</tr>
+<tr>
+<td><code>agent.authentication</code></td>
+<td>鉴权是否开启取决于后端的配置，可查看application.yml的详细描述。对于大多数的场景，需要后端对鉴权进行扩展。目前仅实现了基本的鉴权功能。</td>
+<td>未设置</td>
+</tr>
+<tr>
+<td><code>agent.span_limit_per_segment</code></td>
+<td>单个segment中的span的最大个数。通过这个配置项，Skywalking可评估应用程序内存使用量。</td>
+<td>未设置</td>
+</tr>
+<tr>
+<td><code>agent.ignore_suffix</code></td>
+<td>如果这个集合中包含了第一个span的操作名，这个segment将会被忽略掉。</td>
+<td>未设置</td>
+</tr>
+<tr>
+<td><code>agent.is_open_debugging_class</code></td>
+<td>如果为true，skywalking会将所有经Instrument转换过的类文件保存到<code>/debugging</code>文件夹下。Skywalking团队会要求你提供这些类文件以解决兼容性问题。</td>
+<td>未设置</td>
+</tr>
+<tr>
+<td><code>agent.cause_exception_depth</code></td>
+<td>在记录异常信息的时候, 探针需要记录的堆栈深度.</td>
+<td>5</td>
+</tr>
+<tr>
+<td><code>agent.force_reconnection_period</code></td>
+<td>grpc的强制重连周期，基于grpc_channel_check_interval.</td>
+<td><code>1</code></td>
+</tr>
+<tr>
+<td><code>agent.operation_name_threshold</code></td>
+<td>设置操作名不建议超过最大长度(190).</td>
+<td><code>150</code></td>
+</tr>
+<tr>
+<td><code>agent.keep_tracing</code></td>
+<td>如果该值为 <code>true</code>，即使后台不可用，也要保持跟踪.</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>osinfo.ipv4_list_size</code></td>
+<td>限制ipv4列表的长度.</td>
+<td><code>10</code></td>
+</tr>
+<tr>
+<td>&#96;collector.grpc_channel_check_interval</td>
+<td>检查grpc的channel状态的时间间隔。</td>
+<td><code>30</code></td>
+</tr>
+<tr>
+<td><code>collector.backend_service</code></td>
+<td>接收skywalking trace数据的后端地址</td>
+<td><code>127.0.0.1:11800</code></td>
+</tr>
+<tr>
+<td><code>collector.heartbeat_period</code></td>
+<td>探针心跳报告时间. 单位秒.</td>
+<td><code>30</code></td>
+</tr>
+<tr>
+<td><code>collector.grpc_upstream_timeout</code></td>
+<td>grpc客户端向上游发送数据时超时多长时间. 单位秒.</td>
+<td><code>30</code> 秒</td>
+</tr>
+<tr>
+<td><code>collector.get_profile_task_interval</code></td>
+<td>嗅探器获取配置文件任务列表间隔.</td>
+<td><code>20</code></td>
+</tr>
+<tr>
+<td><code>logging.level</code></td>
+<td>日志级别。默认为debug。</td>
+<td><code>DEBUG</code></td>
+</tr>
+<tr>
+<td><code>logging.file_name</code></td>
+<td>日志文件名</td>
+<td><code>skywalking-api.log</code></td>
+</tr>
+<tr>
+<td><code>logging.output</code></td>
+<td>日志输出. 默认是文件. 使用控制台意味着输出到标准输出.</td>
+<td><code>FILE</code></td>
+</tr>
+<tr>
+<td><code>logging.dir</code></td>
+<td>日志目录。默认为空串，表示使用”system.out”输出日志。</td>
+<td><code>&quot;&quot;</code></td>
+</tr>
+<tr>
+<td><code>logging.pattern</code></td>
+<td>日志格式. 所有的转换说明符:  * <code>%level</code> means log level.  * <code>%timestamp</code> 表示现在的时间格式 <code>yyyy-MM-dd HH:mm:ss:SSS</code>.  * <code>%thread</code> 表示当前线程的名称.  * <code>%msg</code> 表示用户记录的某些消息.  * <code>%class</code> 表示TargetClass的SimpleName.  * <code>%throwable</code> 表示用户抛出的异常.  * <code>%agent_name</code> 表示 <code>agent.service_name</code></td>
+<td><code>%level %timestamp %thread %class : %msg %throwable</code></td>
+</tr>
+<tr>
+<td><code>logging.max_file_size</code></td>
+<td>日志文件的最大大小。当日志文件大小超过这个数，归档当前的日志文件，将日志写入到新文件。</td>
+<td><code>300 * 1024 * 1024</code></td>
+</tr>
+<tr>
+<td><code>logging.max_history_files</code></td>
+<td>The max history log files. When rollover happened, if log files exceed this number,then the oldest file will be delete. Negative or zero means off, by default.</td>
+<td><code>-1</code></td>
+</tr>
+<tr>
+<td><code>jvm.buffer_size</code></td>
+<td>收集JVM信息的buffer的大小。</td>
+<td><code>60 * 10</code></td>
+</tr>
+<tr>
+<td><code>buffer.channel_size</code></td>
+<td>buffer的channel大小。</td>
+<td><code>5</code></td>
+</tr>
+<tr>
+<td><code>buffer.buffer_size</code></td>
+<td>buffer的大小</td>
+<td><code>300</code></td>
+</tr>
+<tr>
+<td><code>profile.active</code></td>
+<td>如果为<code>true</code>，SkyWalking代理将在用户创建新的配置文件任务时启用配置文件. 否则禁用概要.</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>profile.max_parallel</code></td>
+<td>并行监控段计数</td>
+<td><code>5</code></td>
+</tr>
+<tr>
+<td><code>profile.duration</code></td>
+<td>监控段最大时间(分钟)，如果当前监控段时间超出限制，则停止.</td>
+<td><code>10</code></td>
+</tr>
+<tr>
+<td><code>profile.dump_max_stack_depth</code></td>
+<td>最大线程转储的堆栈深度</td>
+<td><code>500</code></td>
+</tr>
+<tr>
+<td><code>profile.snapshot_transport_buffer_size</code></td>
+<td>快照传输到后端缓冲区的大小</td>
+<td><code>50</code></td>
+</tr>
+<tr>
+<td><code>plugin.mongodb.trace_param</code></td>
+<td>如果为true，记录所有访问MongoDB的参数信息。默认为false，表示仅记录操作名，不记录参数信息。</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>plugin.elasticsearch.trace_dsl</code></td>
+<td>如果为true，记录所有访问ElasticSearch的DSL信息。默认为false。</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>plugin.springmvc.use_qualified_name_as_endpoint_name</code></td>
+<td>如果为true，endpoint的name为方法的全限定名，而不是请求的URL。默认为false。</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>plugin.toolit.use_qualified_name_as_operation_name</code></td>
+<td>如果为true，operation的name为方法的全限定名，而不是给定的operation name。默认为false。</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>plugin.mysql.trace_sql_parameters</code></td>
+<td>如果设置为 true, SQL 查询 (典型的是 <code>java.sql.PreparedStatement</code>) 的参数也会被采集.</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>plugin.mysql.sql_parameters_max_length</code></td>
+<td>如果设置为正整数, 收集的 SQL 参数 <code>db.sql.parameters</code> 会被截断到这个长度, 否则会被完整保存, 这可能会导致性能问题.</td>
+<td><code>512</code></td>
+</tr>
+<tr>
+<td><code>plugin.solrj.trace_statement</code></td>
+<td>如果为 true, 追踪 Solr 查询请求中的所有查询参数(包括 deleteByIds 和 deleteByQuery) 默认为 false.</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>plugin.solrj.trace_ops_params</code></td>
+<td>如果为 true, 追踪 Solr 查询中所有操作参数, 默认为 false.</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>plugin.peer_max_length</code></td>
+<td>Peer 描述最大限制.</td>
+<td><code>200</code></td>
+</tr>
+<tr>
+<td><code>plugin.mongodb.filter_length_limit</code></td>
+<td>如果设置为正数, <code>WriteRequest.params</code> 将被截短到这个长度, 否则它将被完全保存，这可能会导致性能问题.</td>
+<td><code>256</code></td>
+</tr>
+<tr>
+<td><code>plugin.postgresql.trace_sql_parameters</code></td>
+<td>如果设置为true，将收集sql的参数(通常是 <code>java.sql.PreparedStatement</code>).</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>plugin.postgresql.sql_parameters_max_length</code></td>
+<td>如果设置为正数, <code>db.sql.parameters</code> 将被截断到这个长度，否则它将被完全保存，这可能会导致性能问题.</td>
+<td><code>512</code></td>
+</tr>
+<tr>
+<td><code>plugin.mariadb.trace_sql_parameters</code></td>
+<td>如果设置为true，将收集sql的参数(通常是 <code>java.sql.PreparedStatement</code>).</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>plugin.mariadb.sql_parameters_max_length</code></td>
+<td>如果设置为正数，<code>db.sql</code> 将被截断到这个长度，否则它将被完全保存，这可能会导致性能问题.</td>
+<td><code>512</code></td>
+</tr>
+<tr>
+<td><code>plugin.light4j.trace_handler_chain</code></td>
+<td>如果为<code>true</code>，请跟踪属于请求的Light4J处理程序链的所有中间件&#x2F;业务处理程序.</td>
+<td>false</td>
+</tr>
+<tr>
+<td><code>plugin.opgroup.*</code></td>
+<td>支持在不同插件中自定义组规则的操作名. 请阅读 <a target="_blank" rel="noopener" href="https://skyapm.github.io/document-cn-translation-of-skywalking/zh/8.0.0/setup/service-agent/java-agent/op_name_group_rule.html">Group rule supported plugins</a></td>
+<td>Not set</td>
+</tr>
+<tr>
+<td><code>plugin.springtransaction.simplify_transaction_definition_name</code></td>
+<td>如果为<code>true</code>，事务定义名称将被简化.</td>
+<td>false</td>
+</tr>
+<tr>
+<td><code>plugin.jdkthreading.threading_class_prefixes</code></td>
+<td>线程类 (<code>java.lang.Runnable</code> and <code>java.util.concurrent.Callable</code>) 及其子类(包括任何名称匹配 <code>THREADING_CLASS_PREFIXES</code> (以 <code>，</code> 分隔)的匿名内部类) 将被检测, 确保只指定短小的前缀，就像您预期要测试的一样, (<code>java.</code> 和 <code>javax.</code> 会因安全问题而被忽略)</td>
+<td>Not set</td>
+</tr>
+<tr>
+<td><code>plugin.tomcat.collect_http_params</code></td>
+<td>这个配置项控制Tomcat插件是否应该收集请求的参数. 同样，在概要追踪中隐式激活.</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>plugin.springmvc.collect_http_params</code></td>
+<td>这个配置项控制SpringMVC插件是否应该收集请求的参数, 当您的Spring应用程序基于Tomcat时, 只需要设置 <code>plugin.tomcat.collect_http_params</code> 或 <code>plugin.springmvc.collect_http_params</code> 之一. 同样，在概要追踪中隐式激活.</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>plugin.http.http_params_length_threshold</code></td>
+<td>当启用 <code>COLLECT_HTTP_PARAMS</code>时，要保留多少字符并将其发送到OAP后端，请使用负值来保留和发送完整的参数. 添加这个配置项是为了提高性能.</td>
+<td><code>1024</code></td>
+</tr>
+<tr>
+<td><code>correlation.element_max_number</code></td>
+<td>关联上下文的最大元素数.</td>
+<td><code>3</code></td>
+</tr>
+<tr>
+<td><code>correlation.value_max_length</code></td>
+<td>关联上下文元素的最大值长度.</td>
+<td><code>128</code></td>
+</tr>
+</tbody></table>
+<h2 id><a href="#" class="headerlink" title></a></h2><h2 id="可选的插件"><a href="#可选的插件" class="headerlink" title="可选的插件"></a>可选的插件</h2><p>Java agent的所有插件都是可插拔的。在agent或第三方仓库的<code>optional-plugins</code> 文件夹下提供了可选的插件。 想要使用可选插件，你需要将对应插件移动到<code>/plugins</code>文件夹下。</p>
+<h2 id="Bootstrap-类插件"><a href="#Bootstrap-类插件" class="headerlink" title="Bootstrap 类插件"></a>Bootstrap 类插件</h2><p>由于意外风险，所有 Bootstrap 插件都是可选的。Bootstrap 插件在 <code>bootstrap-plugins</code> 文件夹中提供. 若使用这些插件，您需要将目标插件 jar 文件放入 <code>/plugins</code> 中.</p>
+<p>现在，我们有以下已知的 Bootstrap 插件.</p>
+<ul>
+<li>JDK HttpURLConnection 插件. Agent 兼容 JDK 1.6+</li>
+<li>JDK Callable and Runnable 插件. Agent 兼容 1.6+</li>
+</ul>
+<h2 id="-1"><a href="#-1" class="headerlink" title></a></h2><h2 id="设置覆盖"><a href="#设置覆盖" class="headerlink" title="设置覆盖"></a>设置覆盖</h2><p>默认情况下，SkyWalking提供<code>agent.config</code>文件给代理。</p>
+<p>设置覆盖意味着最终用户可以通过使用系统属性或代理选项来覆盖这些配置文件中的设置。</p>
+<h3 id="系统属性"><a href="#系统属性" class="headerlink" title="系统属性"></a>系统属性</h3><p>在配置文件中使用 <code>skywalking. + key</code> 作为系统属性键，以覆盖该值。</p>
+<ul>
+<li>为什么需要这个前缀？</li>
+</ul>
+<p>代理系统属性和环境与目标应用程序共享，这个前缀可以避免变量冲突。</p>
+<ul>
+<li>示例</li>
+</ul>
+<p>通过以下方式覆盖 <code>agent.application_code</code>。</p>
+<pre class="line-numbers language-none"><code class="language-none">bashCopy code
+-Dskywalking.agent.application_code&#x3D;31200<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="代理选项"><a href="#代理选项" class="headerlink" title="代理选项"></a>代理选项</h3><p>在JVM参数中在代理路径后添加属性。</p>
+<pre class="line-numbers language-none"><code class="language-none">bashCopy code
+-javaagent:&#x2F;path&#x2F;to&#x2F;skywalking-agent.jar&#x3D;[option1]&#x3D;[value1],[option2]&#x3D;[value2]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<ul>
+<li>示例</li>
+</ul>
+<p>通过以下方式覆盖 <code>agent.application_code</code> 和 <code>logging.level</code>。</p>
+<pre class="line-numbers language-none"><code class="language-none">bashCopy code
+-javaagent:&#x2F;path&#x2F;to&#x2F;skywalking-agent.jar&#x3D;agent.application_code&#x3D;31200,logging.level&#x3D;debug<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<ul>
+<li>特殊字符</li>
+</ul>
+<p>如果选项或值中有分隔符(,或&#x3D;)，应该用引号括起来。</p>
+<pre class="line-numbers language-none"><code class="language-none">bashCopy code
+-javaagent:&#x2F;path&#x2F;to&#x2F;skywalking-agent.jar&#x3D;agent.ignore_suffix&#x3D;&#39;.jpg,.jpeg&#39;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="系统环境变量"><a href="#系统环境变量" class="headerlink" title="系统环境变量"></a>系统环境变量</h3><ul>
+<li>示例</li>
+</ul>
+<p>通过以下方式覆盖 <code>agent.application_code</code> 和 <code>logging.level</code>。</p>
+<pre class="line-numbers language-none"><code class="language-none">bashCopy code
+# UI中的服务名称
+agent.service_name&#x3D;$&#123;SW_AGENT_NAME:Your_ApplicationName&#125;
+
+# 日志级别
+logging.level&#x3D;$&#123;SW_LOGGING_LEVEL:INFO&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>如果操作系统中存在名为 <code>SW_AGENT_NAME</code> 的环境变量且其值为 <code>skywalking-agent-demo</code>，则此处 <code>agent.service_name</code> 的值将被覆盖为 <code>skywalking-agent-demo</code>，否则将设置为 <code>Your_ApplicationName</code>。</p>
+<p>另外，还支持占位符嵌套，如<code>$&#123;SW_AGENT_NAME:$&#123;ANOTHER_AGENT_NAME:Your_ApplicationName&#125;&#125;</code>。在这种情况下，如果 <code>SW_AGENT_NAME</code> 环境变量不存在，但 <code>ANOTHER_AGENT_NAME</code> 环境变量存在且其值为 <code>skywalking-agent-demo</code>，则此处 <code>agent.service_name</code> 的值将被覆盖为 <code>skywalking-agent-demo</code>，否则将设置为 <code>Your_ApplicationName</code>。</p>
+<h3 id="覆盖优先级"><a href="#覆盖优先级" class="headerlink" title="覆盖优先级"></a>覆盖优先级</h3><p>代理选项 &gt; 系统属性(-D) &gt; 系统环境变量 &gt; 配置文件</p>
+<h2 id="常用配置"><a href="#常用配置" class="headerlink" title="常用配置"></a>常用配置</h2><h3 id="采样率配置"><a href="#采样率配置" class="headerlink" title="采样率配置"></a>采样率配置</h3><p>采样率配置：agent.sample_n_per_3_secs&#x3D;${SW_AGENT_SAMPLE:-1}</p>
+<ul>
+<li><p>配置文件配置</p>
+<p>配置文件路径：agent&#x2F;config&#x2F;agent.config</p>
+</li>
+</ul>
+<pre class="line-numbers language-none"><code class="language-none">修改采样率。**agent.sample_n_per_3_secs  表示设置每3秒可收集的链路数据（TraceSegment）的数量。负或零表示全部采样，默认全部采样。
+示例：
+假设您需要在3秒内采集1500个 TraceSegment ，可以设置为：
+agent.sample_n_per_3_secs&#x3D;$&#123;SW_AGENT_SAMPLE:1500&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<ul>
+<li>通过环境变量配置</li>
+</ul>
+<p>新增环境变量 export SW_AGENT_SAMPLE&#x3D;15000</p>
+<h3 id="Agent日志配置"><a href="#Agent日志配置" class="headerlink" title="Agent日志配置"></a>Agent日志配置</h3><pre class="line-numbers language-none"><code class="language-none">agent&#x2F;config&#x2F;agent.config
+- logging.level  日志级别。默认为debug。
+- logging.max_file_size 日志文件的最大大小，默认300M
+- logging.max_history_files  最大历史日志文件，默认无限制。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="忽略指定端点"><a href="#忽略指定端点" class="headerlink" title="忽略指定端点"></a>忽略指定端点</h3><p>不是所有的接口都需要采集，所以需要排除部分接口，比如健康检查接口，Eureka心跳信息等.这样可以节省不必要的数据采集和存储</p>
+<p>将 optional-plugins&#x2F;apm-trace-ignore-plugin-8.13.0.jar 拷贝到plugins&#x2F; </p>
+<pre class="line-numbers language-none"><code class="language-none">cp optional-plugins&#x2F;apm-trace-ignore-plugin-8.13.0.jar plugins&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ul>
+<li>通过系统属性配置</li>
+</ul>
+<pre class="line-numbers language-none"><code class="language-none">-Dskywalking.trace.ignore_path&#x3D;&#x2F;actuator&#x2F;health<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ul>
+<li>通过配置文件</li>
+</ul>
+<p>在<code>config</code>目录下创建<code>apm-trace-ignore-plugin.config</code>文件并添加如下配置激活插件：</p>
+<pre class="line-numbers language-txt" data-language="txt"><code class="language-txt">trace.ignore_path=/your/path/1/**,/your/path/2/** ➊<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>➊ 中的路径配置规则支持<code>Ant Path</code>匹配风格，比如： <code>/path/*</code>, <code>/path/**</code>, <code>/path/?</code>。匹配的Path路径将不会被记录。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>grant lee
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://xxid.xyz/posts/skf69/" title="链路监控-skywalking">http://xxid.xyz/posts/skf69/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/qexo/" rel="tag"># qexo</a>
+              <a href="/tags/hexo/" rel="tag"># hexo</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/nvm2c/" rel="prev" title="nodejs版本管理工具-nvm">
+                  <i class="fa fa-chevron-left"></i> nodejs版本管理工具-nvm
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/nodejs/" rel="next" title="nodejs构建">
+                  nodejs构建 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">grant lee</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">47k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">43 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.2.3/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

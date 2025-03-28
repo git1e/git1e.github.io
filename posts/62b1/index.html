@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xxid.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default","show_result":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInDown"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="日常使用es api">
+<meta property="og:type" content="article">
+<meta property="og:title" content="es-api">
+<meta property="og:url" content="http://xxid.xyz/posts/62b1/index.html">
+<meta property="og:site_name" content="blog">
+<meta property="og:description" content="日常使用es api">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-03-28T09:34:09.128Z">
+<meta property="article:modified_time" content="2025-03-28T09:34:09.128Z">
+<meta property="article:author" content="grant lee">
+<meta property="article:tag" content="es">
+<meta property="article:tag" content="elk">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://xxid.xyz/posts/62b1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://xxid.xyz/posts/62b1/","path":"posts/62b1/","title":"es-api"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>es-api | blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">11</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">20</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#cat-api"><span class="nav-number">1.</span> <span class="nav-text">_cat api</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%90%E7%BB%B4%E5%91%BD%E4%BB%A4%E6%A6%82%E8%A7%88"><span class="nav-number">2.</span> <span class="nav-text">运维命令概览</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4"><span class="nav-number">2.1.</span> <span class="nav-text">集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8A%82%E7%82%B9"><span class="nav-number">2.2.</span> <span class="nav-text">节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#index"><span class="nav-number">2.3.</span> <span class="nav-text">index</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%89%87"><span class="nav-number">2.4.</span> <span class="nav-text">分片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Segments"><span class="nav-number">2.5.</span> <span class="nav-text">Segments</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mapping"><span class="nav-number">2.6.</span> <span class="nav-text">Mapping</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E6%A1%A3"><span class="nav-number">2.7.</span> <span class="nav-text">文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E7%85%A7"><span class="nav-number">2.8.</span> <span class="nav-text">快照</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reindex"><span class="nav-number">2.9.</span> <span class="nav-text">reindex</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#settings%E5%92%8Cmappings%E7%9A%84%E6%84%8F%E4%B9%89"><span class="nav-number">2.10.</span> <span class="nav-text">settings和mappings的意义</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">grant lee</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xxid.xyz/posts/62b1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="grant lee">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="es-api | blog">
+      <meta itemprop="description" content="日常使用es api">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          es-api
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-03-28 09:34:09" itemprop="dateCreated datePublished" datetime="2025-03-28T09:34:09+00:00">2025-03-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/elk/" itemprop="url" rel="index"><span itemprop="name">elk</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/elk/es/" itemprop="url" rel="index"><span itemprop="name">es</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>11k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>10 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">日常使用es api</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><hr>
+<h1 id="cat-api"><a href="#cat-api" class="headerlink" title="_cat api"></a>_cat api</h1><p>通过 GET 请求发送 cat 命名可以列出所有可用的 API：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">GET /_cat
+
+<span class="token operator">=</span>^.^<span class="token operator">=</span>
+/_cat/allocation    查看资源分配情况
+/_cat/shards        查所有分片信息
+/_cat/shards/<span class="token punctuation">&#123;</span>index<span class="token punctuation">&#125;</span>查看某个索引分片信息
+/_cat/master        查看master节点
+/_cat/nodes         查看节点信息
+/_cat/tasks
+/_cat/indices       查看所有索引信息
+/_cat/indices/<span class="token punctuation">&#123;</span>index<span class="token punctuation">&#125;</span>查看某个索引信息
+/_cat/segments      显示碎片中的分段信息
+/_cat/segments/<span class="token punctuation">&#123;</span>index<span class="token punctuation">&#125;</span>显示某个索引中碎片中的分段信息
+/_cat/count     显示索引文档数量
+/_cat/count/<span class="token punctuation">&#123;</span>index<span class="token punctuation">&#125;</span>显示某个索引文档数量
+/_cat/recovery  显示正在进行和先前完成的索引碎片恢复的视图
+/_cat/recovery/<span class="token punctuation">&#123;</span>index<span class="token punctuation">&#125;</span>显示某个索引正在进行和先前完成的索引碎片恢复的视图
+/_cat/health    查看集群健康状况
+/_cat/pending_tasks显示正在等待的任务
+/_cat/aliases   显示别名、过滤器、路由信息
+/_cat/aliases/<span class="token punctuation">&#123;</span>alias<span class="token punctuation">&#125;</span>显示具体别名、过滤器、路由信息
+/_cat/thread_pool   查看线程、队列等使用情况
+/_cat/thread_pool/<span class="token punctuation">&#123;</span>thread_pools<span class="token punctuation">&#125;</span>
+/_cat/plugins       显示每个运行插件节点的视图
+/_cat/fielddata     查看当前集群各个节点的fielddata内存使用情况
+/_cat/fielddata/<span class="token punctuation">&#123;</span>fields<span class="token punctuation">&#125;</span>查看指定field的内存使用情况,里面传field属性对应的值
+/_cat/nodeattrs     显示node节点属性
+/_cat/repositories  查看存储库？
+/_cat/snapshots/<span class="token punctuation">&#123;</span>repository<span class="token punctuation">&#125;</span> 查看存储库的快照？
+/_cat/templates     查看模板信息
+/_cluster/settings  查看集群设置
+/_cluster/settings?include_defaults<span class="token operator">=</span>true  查看集群设置（包括默认设置）<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>对任意 API 添加 ?help 参数</p>
+<pre class="line-numbers language-none"><code class="language-none">GET &#x2F;_cat&#x2F;nodes?help
+
+id               | id,nodeId               | unique node id
+pid              | p                       | process id
+host             | h                       | host name
+ip               | i                       | ip address
+port             | po                      | bound transport port
+version          | v                       | es version
+build            | b                       | es build hash
+jdk              | j                       | jdk version
+disk.avail       | d,disk,diskAvail        | available disk space
+heap.percent     | hp,heapPercent          | used heap ratio
+heap.max         | hm,heapMax              | max configured heap
+ram.percent      | rp,ramPercent           | used machine memory ratio
+ram.max          | rm,ramMax               | total machine memory
+load             | l                       | most recent load avg
+uptime           | u                       | node uptime
+node.role        | r,role,dc,nodeRole      | d:data node, c:client node
+master           | m                       | m:master-eligible, *:current master<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>用 ?h 参数来明确指定显示这些指标：</p>
+<pre class="line-numbers language-none"><code class="language-none">GET &#x2F;_cat&#x2F;nodes?v&amp;h&#x3D;ip,port,heapPercent,heapMax
+
+ip            port heapPercent heapMax
+192.168.1.131 9300          53 990.7mb<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>查看节点信息</p>
+<p>GET &#x2F;_cat&#x2F;nodes?v</p>
+<p>查看资源分配情况</p>
+<p>GET &#x2F;_cat&#x2F;allocation?v</p>
+<p>查看当前线程组状态</p>
+<p>GET &#x2F;_nodes&#x2F;stats?pretty</p>
+<p>查看线程、队列等使用情况</p>
+<p>GET _cat&#x2F;thread_pool?v</p>
+<p>查看集群设置</p>
+<p>GET &#x2F;_cluster&#x2F;settings</p>
+<p>查看所有设置</p>
+<p>GET &#x2F;_all&#x2F;_settings</p>
+<p>查看集群健康状态</p>
+<p>GET &#x2F;_cluster&#x2F;health</p>
+<p>查看License</p>
+<pre class="line-numbers language-none"><code class="language-none">GET &#x2F;_license<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<p>查看集群状态</p>
+<pre class="line-numbers language-none"><code class="language-none">GET &#x2F;_cluster&#x2F;state<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<p>查看ES连接数</p>
+<pre class="line-numbers language-none"><code class="language-none">netstat -anp | grep ESTABLISHED | grep 9200 | gawk &#39;&#123;print $5&#125;&#39; | gawk -F&#39;:&#39; &#39;&#123;print $4&#125;&#39; | sort -rn | uniq -c | sort -rn<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>参数修改</p>
+<p>设置延迟分配,修改分片延时</p>
+<pre class="line-numbers language-none"><code class="language-none">PUT &#x2F;_all&#x2F;_settings
+&#123;
+  &quot;settings&quot;:&#123;
+    &quot;index.unassigned.node_left.delayed_timeout&quot;:&quot;5m&quot;
+  &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>同步刷新</p>
+<pre class="line-numbers language-none"><code class="language-none">POST _flush&#x2F;synced<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<p>自动均衡开关</p>
+<pre class="line-numbers language-none"><code class="language-none">关闭
+PUT &#x2F;_cluster&#x2F;settings
+&#123;
+    &quot;transient&quot; : &#123;
+        &quot;cluster.routing.allocation.enable&quot; : &quot;none&quot;
+    &#125;
+&#125;
+打开
+PUT &#x2F;_cluster&#x2F;settings
+&#123;
+    &quot;transient&quot; : &#123;
+        &quot;cluster.routing.allocation.enable&quot; : &quot;all&quot;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>修改集群自动发现</p>
+<pre class="line-numbers language-none"><code class="language-none">PUT &#x2F;_cluster&#x2F;settings
+&#123;
+    &quot;transient&quot;: &#123;
+        &quot;discovery.zen.minimum_master_nodes&quot; : 2
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>调整分片使其主分片和副分片分布在不同的主机上</p>
+<pre class="line-numbers language-none"><code class="language-none">PUT &#x2F;_cluster&#x2F;settings
+&#123;
+ &quot;persistent&quot;: &#123;
+        &quot;cluster.routing.allocation.same_shard.host&quot;: &quot;on&quot;
+ &#125;
+&#125;
+
+PUT &#x2F;_cluster&#x2F;settings
+&#123;
+ &quot;transient&quot;: &#123;
+        &quot;cluster.routing.allocation.same_shard.host&quot;: &quot;on&quot;
+ &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>查看索引模板</p>
+<pre class="line-numbers language-none"><code class="language-none">GET &#x2F;_template<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>查询具体某个模板</p>
+<pre class="line-numbers language-none"><code class="language-none">GET &#x2F;_template&#x2F;test<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<p>修改更新间隔</p>
+<pre class="line-numbers language-none"><code class="language-none">PUT &#x2F;_template&#x2F;template_1
+&#123;
+    &quot;template&quot; : &quot;my-index*&quot;,
+    &quot;order&quot; : 0,
+    &quot;settings&quot; : &#123;
+        &quot;index&quot;: &#123;
+        &quot;refresh_interval&quot;: &quot;300s&quot;
+        &#125;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>创建索引模板<br>PUT _template&#x2F;feature_template</p>
+<pre class="line-numbers language-none"><code class="language-none">PUT _template&#x2F;template_1
+
+&#123;
+  &quot;index_patterns&quot;: &quot;test*&quot;,
+  &quot;settings&quot;: &#123;
+    &quot;number_of_replicas&quot;: 0,
+    &quot;refresh_interval&quot;: &quot;30s&quot;
+  &#125;
+&#125;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>删除索引模板</p>
+<pre class="line-numbers language-none"><code class="language-none">DELETE &#x2F;_template&#x2F;template_1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<p>查看修改单个索引刷新间隔</p>
+<pre class="line-numbers language-none"><code class="language-none">GET &#x2F;my-index&#x2F;_settings
+&#x2F;_settings
+
+PUT &#x2F;my-index_2018-06-15&#x2F;_settings
+&#123;
+  &quot;settings&quot;: &#123;
+     &quot;index&quot;: &#123;
+        &quot;refresh_interval&quot;: &quot;60s&quot;
+      &#125;
+   &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>查看所有node：</p>
+<pre class="line-numbers language-none"><code class="language-none">GET &#x2F;_cat&#x2F;nodes?v<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<p>查看所有索引：</p>
+<pre class="line-numbers language-none"><code class="language-none">GET &#x2F;_cat&#x2F;indices?v<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<p>修改索引副本数量为0</p>
+<pre class="line-numbers language-none"><code class="language-none">PUT &#x2F;my-index&#x2F;_settings
+&#123;
+  &quot;index&quot;: &#123;
+        &quot;number_of_replicas&quot;: &quot;1&quot;
+        &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>各个分片、索引的fielddata在内存中的占用情况</p>
+<pre class="line-numbers language-none"><code class="language-none">GET &#x2F;_stats&#x2F;fielddata?fields&#x3D;*<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<p>每个node的fielddata在内存中的占用情况</p>
+<pre class="line-numbers language-none"><code class="language-none">GET &#x2F;_nodes&#x2F;stats&#x2F;indices&#x2F;fielddata?fields&#x3D;*<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<p>每个node中的每个索引的fielddata在内存中的占用情况</p>
+<pre class="line-numbers language-none"><code class="language-none">GET &#x2F;_nodes&#x2F;stats&#x2F;indices&#x2F;fielddata?level&#x3D;indices&amp;fields&#x3D;*
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>剩余磁盘空间达到es最小值，添加数据被block</p>
+<pre class="line-numbers language-none"><code class="language-none">PUT _all&#x2F;_settings
+&#123;&quot;index.blocks.read_only_allow_delete&quot;: null&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>es出现cluster_block_exception报错及解决</p>
+<pre class="line-numbers language-none"><code class="language-none">curl -XPUT -H &quot;Content-Type: application&#x2F;json&quot; http:&#x2F;&#x2F;es-url:9200&#x2F;_all&#x2F;_settings -d &#39;&#123;&quot;index.blocks.read_only_allow_delete&quot;: null&#125;&#39;
+
+PUT _cluster&#x2F;settings
+&#123;
+&quot;index.blocks.read_only_allow_delete&quot;: null
+&#125;
+
+
+cluster.routing.allocation.disk.watermark.low: 默认 85% 当达到时，replica 不再写入
+cluster.routing.allocation.disk.watermark.high: 默认 90% 当达到时，shards 会尝试写入其他节点
+cluster.routing.allocation.disk.watermark.flood_stage: 默认 95% 当达到时，所有索引变为 readonly状态<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<table>
+<thead>
+<tr>
+<th>header 1</th>
+<th>header 2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>row 1 col 1</td>
+<td>row 1 col 2</td>
+</tr>
+<tr>
+<td>row 2 col 1</td>
+<td>row 2 col 2</td>
+</tr>
+</tbody></table>
+<h1 id="运维命令概览"><a href="#运维命令概览" class="headerlink" title="运维命令概览"></a>运维命令概览</h1><h2 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET &#x2F;_cat&#x2F;health?v</td>
+<td>查看集群的健康状态。集群状态包括green、red、yellow，各状态的具体说明请参见查看集群健康状态。</td>
+</tr>
+<tr>
+<td>GET &#x2F;_cluster&#x2F;health?pretty&#x3D;true</td>
+<td>查看集群的健康状态。pretty&#x3D;true表示格式化输出。您也可以添加其他查询参数，例如：</td>
+</tr>
+<tr>
+<td>level&#x3D;indices：</td>
+<td>显示索引状态。</td>
+</tr>
+<tr>
+<td>level&#x3D;shards：</td>
+<td>显示分片信息。</td>
+</tr>
+<tr>
+<td>GET &#x2F;_cluster&#x2F;stats</td>
+<td>查看集群的系统信息。包括CPU、JVM等信息。</td>
+</tr>
+<tr>
+<td>GET &#x2F;_cluster&#x2F;state</td>
+<td>查看集群的详细信息。包括节点、分片等信息。</td>
+</tr>
+<tr>
+<td>GET &#x2F;_cluster&#x2F;pending_tasks</td>
+<td>查看集群中堆积的任务。</td>
+</tr>
+<tr>
+<td>GET &#x2F;_cluster&#x2F;settings</td>
+<td>查看集群设置。</td>
+</tr>
+<tr>
+<td>POST _cache&#x2F;clear</td>
+<td>缓存清理</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>调整索引监控日志保留时间（.monitoring-es-6-*）</p>
+<pre class="line-numbers language-none"><code class="language-none">PUT _cluster&#x2F;settings &#123;&quot;persistent&quot;: &#123;&quot;xpack.monitoring.history.duration&quot;:&quot;0d&quot;&#125;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<p>设置需要采集的监控索引</p>
+<pre class="line-numbers language-none"><code class="language-none">PUT _cluster&#x2F;settings &#123;&quot;persistent&quot;: &#123;&quot;xpack.monitoring.collection.indices&quot;:  &quot;*,-.*&quot; &#125; &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+
+
+<h2 id="节点"><a href="#节点" class="headerlink" title="节点"></a>节点</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET &#x2F;_cat&#x2F;master?v</td>
+<td>查看集群中Master节点的信息。</td>
+</tr>
+<tr>
+<td>GET &#x2F;_cat&#x2F;nodes?v</td>
+<td>查看集群中各个节点的当前状态。包括节点CPU使用率、HeapMemory使用率、负载情况等。</td>
+</tr>
+<tr>
+<td>GET &#x2F;_cat&#x2F;nodeattrs?v</td>
+<td>查看单节点的自定义属性。</td>
+</tr>
+<tr>
+<td>GET &#x2F;_nodes&#x2F;stats?pretty&#x3D;true</td>
+<td>查看节点状态。</td>
+</tr>
+<tr>
+<td>GET &#x2F;_nodes&#x2F;process</td>
+<td>查看节点的进程信息。</td>
+</tr>
+<tr>
+<td>GET &#x2F;_nodes&#x2F;hot_threads</td>
+<td>查看高消耗的线程所执行的任务。</td>
+</tr>
+<tr>
+<td>GET &#x2F;_nodes&#x2F;<nodeip>&#x2F;jvm,process,os</nodeip></td>
+<td>查看指定节点的JVM、进程和操作系统信息。</td>
+</tr>
+<tr>
+<td>GET _cat&#x2F;plugins?v</td>
+<td>查看各节点的插件信息。</td>
+</tr>
+<tr>
+<td>GET &#x2F;_cat&#x2F;thread_pool?v</td>
+<td>查看各节点的线程池统计信息。包括线程池的类型、活跃线程数、任务队列大小等。</td>
+</tr>
+</tbody></table>
+<h2 id="index"><a href="#index" class="headerlink" title="index"></a>index</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET _cat&#x2F;indices</td>
+<td>列出所有索引</td>
+<td></td>
+</tr>
+<tr>
+<td>POST &#x2F;my_index&#x2F;_open</td>
+<td>打开索引</td>
+<td></td>
+</tr>
+<tr>
+<td>POST &#x2F;my_index&#x2F;_close</td>
+<td>关闭索引</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>创建新的索引（Index）并设置分片数</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token constant">PUT</span> <span class="token operator">/</span><span class="token operator">&lt;</span>indexName<span class="token operator">></span>
+<span class="token punctuation">&#123;</span>
+  <span class="token string-property property">"settings"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token string-property property">"index"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token string-property property">"number_of_shards"</span><span class="token operator">:</span> <span class="token number">5</span><span class="token punctuation">,</span>
+      <span class="token string-property property">"number_of_replicas"</span><span class="token operator">:</span> <span class="token number">1</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>设置索引index慢日志</p>
+<pre class="line-numbers language-none"><code class="language-none">PUT &#x2F;my_index&#x2F;_settings
+&#123;
+    &quot;index.search.slowlog.threshold.query.warn&quot; : &quot;10s&quot;,
+    &quot;index.search.slowlog.threshold.fetch.debug&quot;: &quot;500ms&quot;,
+    &quot;index.indexing.slowlog.threshold.index.info&quot;: &quot;5s&quot;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>设置所有的索引的index慢日志时间</p>
+<pre class="line-numbers language-none"><code class="language-none">PUT  _settings
+&#123;
+        &quot;index.indexing.slowlog.threshold.index.debug&quot; : &quot;0ms&quot;,
+        &quot;index.indexing.slowlog.threshold.index.info&quot; : &quot;0ms&quot;,
+        &quot;index.indexing.slowlog.threshold.index.trace&quot; : &quot;0ms&quot;,
+        &quot;index.indexing.slowlog.threshold.index.warn&quot; : &quot;0ms&quot;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>设置慢查询fetch</p>
+<pre class="line-numbers language-none"><code class="language-none">PUT _settings
+&#123;
+    &quot;index.search.slowlog.threshold.fetch.warn&quot;:&quot;1s&quot;,
+    &quot;index.search.slowlog.threshold.fetch.info&quot;:&quot;800ms&quot;,
+    &quot;index.search.slowlog.threshold.fetch.debug&quot;:&quot;500ms&quot;,
+    &quot;index.search.slowlog.threshold.fetch.trace&quot;:&quot;200ms&quot;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>设置慢查询query</p>
+<pre class="line-numbers language-none"><code class="language-none">PUT _settings
+&#123;
+     &quot;index.search.slowlog.threshold.query.warn&quot;:&quot;5s&quot;,
+    &quot;index.search.slowlog.threshold.query.info&quot;:&quot;2s&quot;,
+    &quot;index.search.slowlog.threshold.query.debug&quot;:&quot;1s&quot;,
+    &quot;index.search.slowlog.threshold.query.trace&quot;:&quot;400ms&quot;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="分片"><a href="#分片" class="headerlink" title="分片"></a>分片</h2><table>
+<thead>
+<tr>
+<th align="left">命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">GET &#x2F;_cat&#x2F;shards?v</td>
+<td>查看集群中各分片的详细情况。包括索引名称、分片编号、是主分片还是副分片、分片的当前状态（对于分配失败的分片会有失败原因）、doc数量、磁盘占用情况等。您也可以指定index，查看该index的分片信息（GET _cat&#x2F;shards&#x2F;<index>?v）。</index></td>
+</tr>
+<tr>
+<td align="left">GET &#x2F;_cat&#x2F;allocation?v</td>
+<td>查看集群中每个节点的分片分配情况。</td>
+</tr>
+<tr>
+<td align="left">GET &#x2F;_cat&#x2F;recovery?v</td>
+<td>查看集群中每个分片的恢复过程。</td>
+</tr>
+</tbody></table>
+<p>设置my-index的分片副本数为2</p>
+<pre class="line-numbers language-none"><code class="language-none">curl -XPUT &#39;http:&#x2F;&#x2F;localhost:9200&#x2F;my-index&#x2F;_settings&#39; -d &#39;&#123;
+
+   &quot;number_of_replicas&quot; : 2
+
+&#125;&#39;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-none"><code class="language-none">PUT &#x2F;my-index*&#x2F;_settings
+&#123;
+  &quot;index&quot;: &#123;
+        &quot;number_of_replicas&quot;: &quot;0&quot;
+        &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>集群则会在一段时间内不做分配</p>
+<p>在宕机节点重启后，由宕机节点本机磁盘数据进行恢复，在大型集群调优中，能提到数倍的恢复差异。</p>
+<pre class="line-numbers language-none"><code class="language-none">PUT &#x2F;all&#x2F;settings
+&#123;
+  &quot;settings&quot;: &#123;
+    &quot;index.unassigned.node_left.delayed_timeout&quot;:&quot;5m&quot;
+  &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<p>设置集群所有的分片自动均衡</p>
+<pre class="line-numbers language-none"><code class="language-none">PUT &#x2F;_cluster&#x2F;settings
+&#123;
+    &quot;transient&quot; : &#123;
+        &quot;cluster.routing.allocation.enable&quot;:&quot;all&quot;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>设置my-index 分片不自动均衡</p>
+<pre class="line-numbers language-none"><code class="language-none">curl -XPUT &#39;http:&#x2F;&#x2F;168.7.1.67:9200&#x2F;my-index&#x2F;_settings&#39; -d &#39;&#123;
+
+   &quot;cluster.routing.allocation.disable_allocation&quot;:true
+
+&#125;&#39;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>手动移动分片</p>
+<pre class="line-numbers language-none"><code class="language-none">curl -XPOST &quot;http:&#x2F;&#x2F;168.7.1.67:9200&#x2F;_cluster&#x2F;reroute&#39; -d  &#39;&#123;
+   &quot;commands&quot; : [&#123;
+		&quot;move&quot; : &#123;
+			&quot;index&quot; : &quot;my-index&quot;,
+			&quot;shard&quot; : 0,
+			&quot;from_node&quot; : &quot;es-0&quot;,
+			&quot;to_node&quot; : &quot;es-3&quot;
+		&#125;
+	&#125;]
+&#125;&#39;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>手动分配分片</p>
+<pre class="line-numbers language-none"><code class="language-none">curl -XPOST &quot;http:&#x2F;&#x2F;168.7.1.67:9200&#x2F;_cluster&#x2F;reroute&#39; -d  &#39;&#123;
+   &quot;commands&quot; : [&#123;
+		&quot;allocate&quot; : &#123;
+			&quot;index&quot; : &quot;my-index&quot;,
+			&quot;shard&quot; : 0,
+			&quot;node&quot; : &quot;es-2&quot;,
+		&#125;
+	&#125;]
+&#125;&#39;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="Segments"><a href="#Segments" class="headerlink" title="Segments"></a>Segments</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET &#x2F;_cat&#x2F;segments?v</td>
+<td>查看集群中各索引的segment信息。包括segment名称、所属shard、内存或磁盘占用大小、是否刷盘等。您也可以指定index，查看该index的segment信息（GET _cat&#x2F;segment&#x2F;<index>?v）。</index></td>
+</tr>
+</tbody></table>
+<h2 id="Mapping"><a href="#Mapping" class="headerlink" title="Mapping"></a>Mapping</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET &#x2F;_cat&#x2F;indices?v</td>
+<td>查看集群中所有索引的详细信息。包括索引的健康度、状态、分片数和副本数、包含的文档数等。您也可以查看指定索引的信息（GET _cat&#x2F;indices&#x2F;<index>?v）。</index></td>
+</tr>
+<tr>
+<td>GET &#x2F;_cat&#x2F;aliases?v</td>
+<td>查看集群中所有aliases（索引别名）的信息。包括aliases对应的索引、路由配置等。</td>
+</tr>
+</tbody></table>
+<h2 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET &#x2F;_cat&#x2F;count?v</td>
+<td>查看集群中的文档数量。您也可以指定index，查看该index的文档数量（GET _cat&#x2F;count&#x2F;<index>?v）。</index></td>
+</tr>
+<tr>
+<td>GET &#x2F;<index>&#x2F;<type>&#x2F;<id></id></type></index></td>
+<td>查看文档中的数据。</td>
+</tr>
+</tbody></table>
+<h2 id="快照"><a href="#快照" class="headerlink" title="快照"></a>快照</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET _snapshot&#x2F;_all</td>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;查看所有快照。</td>
+</tr>
+<tr>
+<td>GET _snapshot&#x2F;<snapshot_name>&#x2F;_status</snapshot_name></td>
+<td>查看指定快照的进度。</td>
+</tr>
+</tbody></table>
+<table>
+        <tr>
+            <th>设备</th>
+            <th>设备文件名</th>
+            <th>文件描述符</th>
+            <th>类型</th>
+        </tr>
+        <tr>
+            <th>键盘</th>
+            <th>/dev/stdin</th>
+            <th>0</th>
+            <th>标准输入</th>
+        </tr>
+        <tr>
+            <th>显示器</th>
+            <th>/dev/stdout</th>
+            <th>1</th>
+            <th>标准输出</th>
+        </tr>
+</table>
+
+
+
+<h2 id="reindex"><a href="#reindex" class="headerlink" title="reindex"></a>reindex</h2><p>reindex你可以简单理解为scroll+bulkinsert，ES不会帮你复制source的mapping、settings，只会按默认设置自动做映射,建议是先建好新的索引再做reindex</p>
+<p>1、新index不创建mapping，则老数据进入新index时会由es自动生成对应mapping，不建议这样</p>
+<p>2、新index和老index的mapping对应，则可以正常导过去数据</p>
+<pre class="line-numbers language-none"><code class="language-none">POST
+&#123;
+  &quot;source&quot;: &#123;
+    &quot;index&quot;: &quot;old_index&quot;,
+	&quot;size&quot;:1000   &#x2F;&#x2F;可选，每次批量提交1000个，可以提高效率，建议每次提交5-15M的数据
+	&quot;query&quot;: &#123;
+      &quot;match&quot;: &#123;
+        &quot;CreateBy&quot;: &quot;xxx&quot;
+      &#125;
+    &#125;
+  &#125;,
+  &quot;dest&quot;: &#123;
+    &quot;index&quot;: &quot;new_index&quot;
+  &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h2 id="settings和mappings的意义"><a href="#settings和mappings的意义" class="headerlink" title="settings和mappings的意义"></a>settings和mappings的意义</h2><p>　　settings是修改分片和副本数的。</p>
+<p>　　mappings是修改字段和类型的。类似于mysql中的表结构信息</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>原作者： </strong>grant lee
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://xxid.xyz/posts/62b1/" title="es-api">http://xxid.xyz/posts/62b1/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/es/" rel="tag"># es</a>
+              <a href="/tags/elk/" rel="tag"># elk</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/8ad9/" rel="prev" title="vimdiff 实用指南：高效文件对比与同步操作">
+                  <i class="fa fa-chevron-left"></i> vimdiff 实用指南：高效文件对比与同步操作
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">grant lee</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">47k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">43 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.2.3/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

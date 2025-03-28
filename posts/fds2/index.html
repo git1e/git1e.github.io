@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xxid.xyz","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"default","show_result":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInDown"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":true,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="nginx 日志详解">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nginx log format">
+<meta property="og:url" content="http://xxid.xyz/posts/fds2/index.html">
+<meta property="og:site_name" content="blog">
+<meta property="og:description" content="nginx 日志详解">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-07-10T10:32:40.000Z">
+<meta property="article:modified_time" content="2025-03-28T09:34:09.131Z">
+<meta property="article:author" content="grant lee">
+<meta property="article:tag" content="nginx">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://xxid.xyz/posts/fds2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://xxid.xyz/posts/fds2/","path":"posts/fds2/","title":"nginx log format"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>nginx log format | blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">11</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">14</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">20</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx%E6%97%A5%E5%BF%97%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">Nginx日志格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#access%E6%97%A5%E5%BF%97"><span class="nav-number">1.1.</span> <span class="nav-text">access日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%99%E8%AF%AF%E6%97%A5%E5%BF%97"><span class="nav-number">1.2.</span> <span class="nav-text">错误日志</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E6%A0%B7%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">日志样例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E8%AF%B4%E6%98%8E"><span class="nav-number">3.</span> <span class="nav-text">字段说明</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">grant lee</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xxid.xyz/posts/fds2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="grant lee">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="nginx log format | blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          nginx log format
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-07-10 10:32:40" itemprop="dateCreated datePublished" datetime="2023-07-10T10:32:40+00:00">2023-07-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-03-28 09:34:09" itemprop="dateModified" datetime="2025-03-28T09:34:09+00:00">2025-03-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/nginx/" itemprop="url" rel="index"><span itemprop="name">nginx</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>nginx 日志详解</p>
+<span id="more"></span>
+
+<p>Nginx日志格式和目录通常在配置文件&#x2F;etc&#x2F;nginx&#x2F;nginx.conf中。</p>
+<h2 id="Nginx日志格式"><a href="#Nginx日志格式" class="headerlink" title="Nginx日志格式"></a>Nginx日志格式</h2><h3 id="access日志"><a href="#access日志" class="headerlink" title="access日志"></a>access日志</h3><p>配置文件中定义了Nginx日志的打印格式，即main格式：</p>
+<pre class="line-numbers language-none"><code class="language-none">log_format main  &#39;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#39;
+                 &#39;$request_time $request_length &#39;
+                 &#39;$status $body_bytes_sent &quot;$http_referer&quot; &#39;
+                 &#39;&quot;$http_user_agent&quot;&#39;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>默认格式如下</p>
+<pre class="line-numbers language-none"><code class="language-none">log_format main  &#39;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#39;
+                 &#39;$status $body_bytes_sent &quot;$http_referer&quot; &#39; 
+                 &#39;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#39;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>json格式日志</p>
+<pre class="line-numbers language-none"><code class="language-none">log_format json_format  &#39;&#123;&quot;@timestamp&quot;:&quot;$time_iso8601&quot;,&#39;
+    &#39;&quot;client_ip&quot;:&quot;$remote_addr&quot;,&#39;
+    &#39;&quot;remote_user&quot;:&quot;$remote_user&quot;,&#39;
+    &#39;&quot;request_method&quot;:&quot;$request_method&quot;,&#39;
+    &#39;&quot;protocol&quot;:&quot;$scheme&quot;,&#39;
+    &#39;&quot;uri&quot;:&quot;$uri&quot;,&#39;
+    &#39;&quot;status&quot;:&quot;$status&quot;,&#39;
+    &#39;&quot;upstream_status&quot;:&quot;$upstream_status&quot;,&#39;
+    &#39;&quot;size&quot;:&quot;$body_bytes_sent&quot;,&#39;
+    &#39;&quot;upstream_response_time&quot;:&quot;$upstream_response_time&quot;,&#39;
+    &#39;&quot;upstream_addr&quot;:&quot;$upstream_addr&quot;,&#39;
+    &#39;&quot;nginx_node&quot;:&quot;$hostname&quot;,&#39;
+    &#39;&quot;http_user_agent&quot;:&quot;$http_user_agent&quot;,&#39;
+    &#39;&quot;connection&quot;:&quot;$connection&quot;,&#39;
+    &#39;&quot;request_time&quot;:&quot;$request_time&quot;&#125;&#39;; <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>声明使用了main这种日志格式和写入的文件名。</p>
+<pre class="line-numbers language-none"><code class="language-none">access_log &#x2F;var&#x2F;logs&#x2F;nginx&#x2F;access.log main<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>声明使用了json这种日志格式和写入的文件名。</p>
+<pre class="line-numbers language-none"><code class="language-none">access_log &#x2F;path&#x2F;to&#x2F;access.log json;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="错误日志"><a href="#错误日志" class="headerlink" title="错误日志"></a>错误日志</h3><p>错误日志主要记录客户端访问Nginx出错时的日志，格式不支持自定义。</p>
+<p>通过错误日志，你可以得到系统某个服务或server的性能瓶颈等。因此，将日志好好利用，你可以得到很多有价值的信息。错误日志由指令error_log来指定，具体格式如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">error_log path(存放路径) level(日志等级)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>path含义同access_log，level表示日志等级，具体如下：<br>[ debug | info | notice | warn | error | crit ]<br>从左至右，日志详细程度逐级递减，即debug最详细，crit最少。</p>
+<p>举例说明如下：<br>error_log logs&#x2F;error.log info;<br>需要注意的是：error_log off并不能关闭错误日志，而是会将错误日志记录到一个文件名为off的文件中。</p>
+<p>正确的关闭错误日志记录功能的方法如下：<br>error_log &#x2F;dev&#x2F;null;<br>上面表示将存储日志的路径设置为“&#x2F;dev&#x2F;null”。</p>
+<h2 id="日志样例"><a href="#日志样例" class="headerlink" title="日志样例"></a>日志样例</h2><p>Nginx日志样例如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">192.168.1.2 - - [10&#x2F;Jul&#x2F;2023:15:51:09 +0800] &quot;GET &#x2F;ubuntu.iso HTTP&#x2F;1.0&quot; 0.000 129 404 168 &quot;-&quot; &quot;Wget&#x2F;1.11.4 Red Hat modified&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<p>默认日志</p>
+<pre class="line-numbers language-none"><code class="language-none">172.20.0.139 - - [27&#x2F;Aug&#x2F;2023:03:00:24 +0000] &quot;POST &#x2F;api&#x2F;goodsReturn&#x2F;pushUpdateGoods HTTP&#x2F;1.1&quot; 200 17 &quot;-&quot; &quot;okhttp&#x2F;3.11.0&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h2 id="字段说明"><a href="#字段说明" class="headerlink" title="字段说明"></a>字段说明</h2><table>
+<thead>
+<tr>
+<th>字段名称</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>remote_addr</td>
+<td>表示客户端IP地址。</td>
+</tr>
+<tr>
+<td>remote_user</td>
+<td>表示客户端用户名称。</td>
+</tr>
+<tr>
+<td>request</td>
+<td>表示请求的URL和HTTP协议。</td>
+</tr>
+<tr>
+<td>status</td>
+<td>表示请求状态。</td>
+</tr>
+<tr>
+<td>body_bytes_sent</td>
+<td>表示发送给客户端的字节数，不包括响应头的大小；该变量与Apache模块modlogconfig里的bytes_sent发送给客户端的总字节数相同。</td>
+</tr>
+<tr>
+<td>bytes_sent</td>
+<td>发送给客户端的总字节数</td>
+</tr>
+<tr>
+<td>connection</td>
+<td>表示连接的序列号。</td>
+</tr>
+<tr>
+<td>connection_requests</td>
+<td>表示当前通过一个连接获得的请求数量。</td>
+</tr>
+<tr>
+<td>msec</td>
+<td>表示日志写入的时间。单位为秒，精度是毫秒。</td>
+</tr>
+<tr>
+<td>pipe</td>
+<td>表示请求是否通过HTTP流水线（pipelined）发送。通过HTTP流水线发送则pipe值为<code>p</code>，否则为<code>.</code>。</td>
+</tr>
+<tr>
+<td>http_host</td>
+<td>请求的url地址（目标url地址）的host</td>
+</tr>
+<tr>
+<td>host</td>
+<td>等同于$http_host</td>
+</tr>
+<tr>
+<td>http_referer</td>
+<td>表示从哪个页面链接访问过来的。</td>
+</tr>
+<tr>
+<td>http_user_agent</td>
+<td>表示客户端浏览器相关信息，前后必须加上双引号。</td>
+</tr>
+<tr>
+<td>request_length</td>
+<td>表示请求的长度。包括请求行，请求头和请求正文。</td>
+</tr>
+<tr>
+<td>request_time</td>
+<td>表示请求处理时间，单位为秒，精度为毫秒。从读入客户端的第一个字节开始，直到把最后一个字符发送给客户端后进行日志写入为止。</td>
+</tr>
+<tr>
+<td>[$time_local]</td>
+<td>表示通用日志格式下的本地时间，前后必须加上中括号。</td>
+</tr>
+<tr>
+<td>upstream_addr</td>
+<td>集群轮询地址</td>
+</tr>
+<tr>
+<td>upstream_response_time</td>
+<td>指从Nginx向后端（php-cgi)建立连接开始到接受完数据然后关闭连接为止的时间</td>
+</tr>
+<tr>
+<td>upstream_connect_time</td>
+<td>与服务器连接所花费的时间</td>
+</tr>
+<tr>
+<td>upstream_status</td>
+<td>upstream状态</td>
+</tr>
+<tr>
+<td>uri</td>
+<td>请求中的当前URI(不带请求参数，参数位于$args)，不同于浏览器传递的$request_uri的值，它可以通过内部重定向，或者使用index指令进行修改。</td>
+</tr>
+<tr>
+<td>document_uri</td>
+<td>等同于$uri</td>
+</tr>
+<tr>
+<td>request_uri</td>
+<td>比$uri多了参数，即$uri+$args</td>
+</tr>
+<tr>
+<td>http_x_forwarded_for</td>
+<td>如果使用了代理，这个参数会记录代理服务器的ip和客户端的ip</td>
+</tr>
+<tr>
+<td>schema</td>
+<td>协议</td>
+</tr>
+<tr>
+<td>server_name</td>
+<td>虚拟主机名称</td>
+</tr>
+<tr>
+<td>server_port</td>
+<td>服务器端口</td>
+</tr>
+<tr>
+<td>server_protocol</td>
+<td>服务器协议</td>
+</tr>
+<tr>
+<td>ssl_cipher</td>
+<td>交换数据中的算法</td>
+</tr>
+<tr>
+<td>ssl_protocol</td>
+<td>SSL协议版本</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>grant lee
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://xxid.xyz/posts/fds2/" title="nginx log format">http://xxid.xyz/posts/fds2/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/nginx/" rel="tag"># nginx</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/f69/" rel="prev" title="qexo">
+                  <i class="fa fa-chevron-left"></i> qexo
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/ca0f/" rel="next" title="mac快捷键">
+                  mac快捷键 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">grant lee</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">47k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">43 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"neutral","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.2.3/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>
